@@ -16,6 +16,11 @@
     <meta name="author" content="Baby Xerox & Baby Gifts">
     <meta name="robots" content="index, follow">
 
+    <!-- PWA App Setup (Install App without Play Store) -->
+    <meta name="theme-color" content="#0f172a">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135682.png">
+    <link rel="manifest" id="manifest-link">
+
     <!-- Open Graph / WhatsApp & Instagram Share Preview Tags -->
     <meta property="og:title" content="TNPSC Photo Resizer & TNPSC Photo Compress | Baby Xerox">
     <meta property="og:description" content="1-Click TNPSC Photo Resizer & Compressor (20KB-50KB) with Auto White/Color Background, Name & Date! ✨ Order Customized Songs @ Rs. 499/- with Baby Gifts.">
@@ -652,6 +657,33 @@
 
     <!-- Web Audio Synthesizer / Custom Song Player -->
     <script>
+        // --- PWA (App Installation) Setup ---
+        const manifestJSON = {
+            "name": "TNPSC Photo Resizer - Baby Xerox",
+            "short_name": "Baby Xerox",
+            "start_url": "./",
+            "display": "standalone",
+            "background_color": "#0f172a",
+            "theme_color": "#0f172a",
+            "icons": [{
+                "src": "https://cdn-icons-png.flaticon.com/512/3135/3135682.png",
+                "sizes": "512x512",
+                "type": "image/png"
+            }]
+        };
+        const manifestBlob = new Blob([JSON.stringify(manifestJSON)], { type: 'application/manifest+json' });
+        document.getElementById('manifest-link').href = URL.createObjectURL(manifestBlob);
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                // Service Workers cannot be loaded via blob: URLs for security reasons.
+                // It looks for a physical 'sw.js' file in your directory.
+                navigator.serviceWorker.register('./sw.js').catch((err) => {
+                    console.log('Note: To enable "Add to Home Screen" (PWA), please create an empty "sw.js" file in your GitHub repository.');
+                });
+            });
+        }
+
         document.getElementById('year').innerText = new Date().getFullYear();
 
         // --- Custom Message Box Logic ---
