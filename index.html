@@ -81,6 +81,11 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Cropper.js for Interactive Image Cropping -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0f172a; color: #f8fafc; }
         .hide { display: none !important; }
@@ -201,7 +206,19 @@
                     <div class="space-y-4 flex-grow">
                         <div>
                             <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Select Photo (JPG/PNG)</label>
-                            <input type="file" id="photoFile" accept="image/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-500 bg-slate-950 border border-slate-700 rounded-xl p-1.5 cursor-pointer transition">
+                            <input type="file" id="photoFile" accept="image/*" onchange="handleFileSelect(event, 'photo')" class="w-full text-xs text-slate-400 file:mr-3 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-500 bg-slate-950 border border-slate-700 rounded-xl p-1.5 cursor-pointer transition">
+                            
+                            <!-- Cropped Photo Thumbnail Preview -->
+                            <div id="photoThumb" class="hidden mt-3 flex items-center justify-between bg-emerald-900/20 p-2.5 rounded-xl border border-emerald-500/30">
+                                <div class="flex items-center gap-3">
+                                    <img id="photoThumbImg" src="" class="w-10 h-10 object-cover rounded-lg border border-emerald-500/50">
+                                    <div>
+                                        <p class="text-xs font-bold text-emerald-400 flex items-center gap-1"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Cropped Successfully</p>
+                                        <p class="text-[10px] text-slate-400">Click Process to continue</p>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="document.getElementById('photoFile').click()" class="text-[10px] bg-slate-800 hover:bg-slate-700 border border-slate-600 px-2 py-1.5 rounded-lg text-slate-200 font-medium transition">Re-Crop</button>
+                            </div>
                         </div>
                         
                         <div>
@@ -330,7 +347,18 @@
                     <div class="space-y-4 flex-grow">
                         <div>
                             <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Select Signature (JPG/PNG)</label>
-                            <input type="file" id="sigFile" accept="image/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500 bg-slate-950 border border-slate-700 rounded-xl p-1.5 cursor-pointer transition">
+                            <input type="file" id="sigFile" accept="image/*" onchange="handleFileSelect(event, 'sig')" class="w-full text-xs text-slate-400 file:mr-3 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500 bg-slate-950 border border-slate-700 rounded-xl p-1.5 cursor-pointer transition">
+                            
+                            <!-- Cropped Signature Thumbnail Preview -->
+                            <div id="sigThumb" class="hidden mt-3 flex items-center justify-between bg-emerald-900/20 p-2.5 rounded-xl border border-emerald-500/30">
+                                <div class="flex items-center gap-3">
+                                    <img id="sigThumbImg" src="" class="w-14 h-8 object-cover rounded-lg border border-emerald-500/50 bg-white">
+                                    <div>
+                                        <p class="text-xs font-bold text-emerald-400 flex items-center gap-1"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Cropped Successfully</p>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="document.getElementById('sigFile').click()" class="text-[10px] bg-slate-800 hover:bg-slate-700 border border-slate-600 px-2 py-1.5 rounded-lg text-slate-200 font-medium transition">Re-Crop</button>
+                            </div>
                         </div>
                         
                         <div class="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3">
@@ -380,14 +408,14 @@
                                     <span class="text-xs font-medium text-slate-300">Brightness (Whiten Paper)</span>
                                     <span id="sigBrightValue" class="text-[11px] font-bold bg-indigo-500/20 text-indigo-400 px-2 py-0.5 rounded-md border border-indigo-500/30">+20%</span>
                                 </div>
-                                <input type="range" id="sigBrightness" min="-50" max="80" value="20" oninput="document.getElementById('sigBrightValue').innerText = (this.value >= 0 ? '+' : '') + this.value + '%'; if(document.getElementById('sigFile').files.length) generateSignature();" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+                                <input type="range" id="sigBrightness" min="-50" max="80" value="20" oninput="document.getElementById('sigBrightValue').innerText = (this.value >= 0 ? '+' : '') + this.value + '%'; if(croppedBlobs['sig'] || document.getElementById('sigFile').files.length) generateSignature();" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
                             </div>
                             <div>
                                 <div class="flex items-center justify-between mb-1">
                                     <span class="text-xs font-medium text-slate-300">Contrast (Darken Signature Ink)</span>
                                     <span id="sigContrastValue" class="text-[11px] font-bold bg-indigo-500/20 text-indigo-400 px-2 py-0.5 rounded-md border border-indigo-500/30">+35%</span>
                                 </div>
-                                <input type="range" id="sigContrast" min="-50" max="90" value="35" oninput="document.getElementById('sigContrastValue').innerText = (this.value >= 0 ? '+' : '') + this.value + '%'; if(document.getElementById('sigFile').files.length) generateSignature();" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+                                <input type="range" id="sigContrast" min="-50" max="90" value="35" oninput="document.getElementById('sigContrastValue').innerText = (this.value >= 0 ? '+' : '') + this.value + '%'; if(croppedBlobs['sig'] || document.getElementById('sigFile').files.length) generateSignature();" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
                             </div>
                         </div>
 
@@ -675,6 +703,13 @@
     <!-- Professional Footer -->
     <footer class="bg-slate-950 text-slate-400 py-8 border-t border-slate-800 text-sm mt-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-6">
+            
+            <!-- Thirukkural Section -->
+            <div class="text-center space-y-1 bg-slate-900/50 p-4 rounded-2xl border border-slate-800/60 max-w-2xl mx-auto w-full shadow-inner">
+                <p class="text-amber-400 font-bold text-base sm:text-lg leading-relaxed">"கற்க கசடறக் கற்பவை கற்றபின்<br>நிற்க அதற்குத் தக."</p>
+                <p class="text-xs text-slate-500 font-medium mt-1">- திருவள்ளுவர்</p>
+            </div>
+
             <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
                 <div>
                     <p class="font-bold text-white">Baby Xerox &amp; Baby Gifts &copy; <span id="year"></span></p>
@@ -686,6 +721,15 @@
                     <a href="https://www.instagram.com/babygifts_2021/" target="_blank" rel="noopener noreferrer" class="hover:text-pink-400 transition">Instagram: <strong>@babygifts_2021</strong></a>
                 </div>
             </div>
+
+            <!-- Live Visitor Counter -->
+            <div class="flex flex-col items-center justify-center gap-2 mt-2">
+                <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Total Website Visitors</p>
+                <a href="https://hits.seeyoufarm.com" target="_blank" rel="noopener noreferrer" class="hover:opacity-90 transition transform hover:scale-105">
+                    <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Ftnpscphotoresizer-babyxerox.github.io&count_bg=%232563EB&title_bg=%231E293B&icon=&icon_color=%23E7E7E7&title=Hits&edge_flat=true" alt="Website Visitors Counter" class="shadow-lg rounded">
+                </a>
+            </div>
+
             <div class="border-t border-slate-900 pt-4 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-500">
                 <a href="#resizerTool" class="hover:text-slate-300 transition">Home / Tool</a>
                 <a href="#aboutSection" class="hover:text-slate-300 transition">About Us</a>
@@ -709,6 +753,33 @@
 
     <!-- Hidden Canvas Elements for Processing -->
     <canvas id="processCanvas" class="hidden"></canvas>
+
+    <!-- Crop Modal -->
+    <div id="cropModal" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 backdrop-blur-sm px-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-3xl h-[85vh] flex flex-col overflow-hidden shadow-2xl transform transition-transform scale-95 duration-300" id="cropModalInner">
+            <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950">
+                <h3 class="text-white font-bold text-base sm:text-lg flex items-center gap-2">
+                    <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771z" opacity="0"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                    Crop & Adjust Image
+                </h3>
+                <button onclick="cancelCrop()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div class="flex-grow relative bg-black overflow-hidden p-2 flex items-center justify-center">
+                <img id="cropTargetImg" class="max-w-full max-h-full block" src="">
+            </div>
+            <div class="p-4 border-t border-slate-800 flex justify-between items-center bg-slate-950">
+                <p class="text-xs text-slate-500 hidden sm:block">Drag corners to crop your face or signature perfectly.</p>
+                <div class="flex gap-3 w-full sm:w-auto justify-end">
+                    <button onclick="cancelCrop()" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm rounded-xl transition w-full sm:w-auto">Cancel</button>
+                    <button onclick="applyCrop()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm rounded-xl transition shadow-lg shadow-blue-900/50 w-full sm:w-auto flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Apply Crop
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Cookie Consent Banner (Mandatory for AdSense Approval) -->
     <div id="cookieBanner" class="fixed bottom-0 left-0 w-full bg-slate-900 border-t border-slate-700 shadow-2xl z-50 transform transition-transform translate-y-full duration-500">
@@ -788,6 +859,97 @@
             modal.children[0].classList.remove('scale-100');
         }
 
+        // --- Cropper.js Logic ---
+        let cropper = null;
+        let croppedBlobs = { photo: null, sig: null };
+        let currentCropType = null;
+
+        function handleFileSelect(event, type) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Reset previous crop data for this type
+            croppedBlobs[type] = null;
+            document.getElementById(type + 'Thumb').classList.add('hidden');
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const cropModal = document.getElementById('cropModal');
+                const cropModalInner = document.getElementById('cropModalInner');
+                const cropImg = document.getElementById('cropTargetImg');
+                
+                cropImg.src = e.target.result;
+                
+                // Show Modal smoothly
+                cropModal.classList.remove('opacity-0', 'pointer-events-none');
+                cropModalInner.classList.remove('scale-95');
+                cropModalInner.classList.add('scale-100');
+                
+                if (cropper) {
+                    cropper.destroy();
+                }
+                
+                setTimeout(() => {
+                    cropper = new Cropper(cropImg, {
+                        viewMode: 1,
+                        autoCropArea: 0.95,
+                        background: true,
+                        zoomable: true,
+                        guides: true,
+                        // If type is sig, encourage wide crop, if photo encourage portrait
+                        aspectRatio: type === 'photo' ? NaN : NaN, // Free crop for both to ensure flexibility
+                    });
+                    currentCropType = type;
+                }, 150); // slight delay for modal transition
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function cancelCrop() {
+            const cropModal = document.getElementById('cropModal');
+            const cropModalInner = document.getElementById('cropModalInner');
+            
+            cropModal.classList.add('opacity-0', 'pointer-events-none');
+            cropModalInner.classList.add('scale-95');
+            cropModalInner.classList.remove('scale-100');
+            
+            if (cropper) { 
+                cropper.destroy(); 
+                cropper = null; 
+            }
+            
+            // Clear the file input if crop wasn't saved, so user can re-select same file if needed
+            if (currentCropType && !croppedBlobs[currentCropType]) {
+                document.getElementById(currentCropType + 'File').value = '';
+            }
+        }
+
+        function applyCrop() {
+            if (!cropper) return;
+            
+            // Generate cropped canvas and save as blob
+            cropper.getCroppedCanvas({
+                maxWidth: 2500,
+                maxHeight: 2500,
+                fillColor: '#fff',
+            }).toBlob((blob) => {
+                croppedBlobs[currentCropType] = blob;
+                
+                // Update Thumbnail UI
+                const thumb = document.getElementById(currentCropType + 'Thumb');
+                const thumbImg = document.getElementById(currentCropType + 'ThumbImg');
+                thumbImg.src = URL.createObjectURL(blob);
+                thumb.classList.remove('hidden');
+                
+                cancelCrop(); // Close modal
+                
+                // Optionally auto-process if parameters are filled
+                if (currentCropType === 'sig') {
+                    generateSignature();
+                }
+            }, 'image/jpeg', 0.98);
+        }
+
         // --- Core Image Processing Logic ---
         function loadImage(file) {
             return new Promise((resolve, reject) => {
@@ -829,7 +991,7 @@
                     btn.className = "bg-color-btn flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-slate-700 bg-slate-900 text-[11px] font-medium text-slate-300";
                 }
             });
-            const hasFile = document.getElementById('photoFile').files.length > 0;
+            const hasFile = croppedBlobs['photo'] || document.getElementById('photoFile').files.length > 0;
             const needNameDate = document.getElementById('printNameDateToggle').checked;
             const hasNameDate = document.getElementById('photoName').value.trim() && document.getElementById('photoDate').value;
             if (hasFile && (!needNameDate || hasNameDate)) {
@@ -862,7 +1024,7 @@
             document.getElementById('sigContrast').value = 35;
             document.getElementById('sigBrightValue').innerText = '+20%';
             document.getElementById('sigContrastValue').innerText = '+35%';
-            if (document.getElementById('sigFile').files.length > 0) {
+            if (croppedBlobs['sig'] || document.getElementById('sigFile').files.length > 0) {
                 generateSignature();
             }
         }
@@ -1213,7 +1375,9 @@
             const bgSmoothness = parseInt(document.getElementById('bgSmoothness').value || "60", 10);
             const targetBgRgb = hexToRgb(selectedPhotoBgHex);
 
-            if (fileInput.files.length === 0) {
+            const sourceFile = croppedBlobs['photo'] || fileInput.files[0];
+
+            if (!sourceFile) {
                 showMessage("Missing File", "Please select a photograph to process.");
                 return;
             }
@@ -1223,7 +1387,7 @@
             }
 
             try {
-                const img = await loadImage(fileInput.files[0]);
+                const img = await loadImage(sourceFile);
                 let targetW = 130, targetH = 170, minKB = 20, maxKB = 50;
 
                 if (dimSelect === 'custom') {
@@ -1322,13 +1486,15 @@
             const brightness = parseInt(document.getElementById('sigBrightness').value || "20", 10);
             const contrast = parseInt(document.getElementById('sigContrast').value || "35", 10);
 
-            if (fileInput.files.length === 0) {
+            const sourceFile = croppedBlobs['sig'] || fileInput.files[0];
+
+            if (!sourceFile) {
                 showMessage("Missing File", "Please select a signature image to process.");
                 return;
             }
 
             try {
-                const img = await loadImage(fileInput.files[0]);
+                const img = await loadImage(sourceFile);
                 let targetW = 400, targetH = 133, minKB = 10, maxKB = 20;
 
                 if (dimSelect === 'custom') {
