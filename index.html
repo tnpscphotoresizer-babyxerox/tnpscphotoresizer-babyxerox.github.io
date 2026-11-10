@@ -89,6 +89,12 @@
         ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #64748b; }
 
+        /* Calendar Icon Visible Update */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1) brightness(100%) opacity(0.8);
+            cursor: pointer;
+        }
+
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-6px); }
@@ -615,6 +621,55 @@
             </section>
 
         </div>
+
+        <!-- AdSense Content Booster: Comprehensive Exam Guide (Helps overcome "Thin Content" rejection) -->
+        <article class="mt-12 bg-slate-900/60 border border-slate-800/80 rounded-2xl p-6 sm:p-8 text-slate-300 shadow-lg">
+            <header class="border-b border-slate-800 pb-4 mb-6">
+                <h2 class="text-xl sm:text-2xl font-extrabold text-white">Comprehensive Guide: TNPSC & Government Exam Photo & Signature Upload Rules (2024 - 2026)</h2>
+                <p class="text-xs sm:text-sm text-slate-400 mt-2">Everything you need to know to avoid application rejection in TNPSC Group 4, Group 2, VAO, and UPSC exams.</p>
+            </header>
+
+            <div class="space-y-6 text-xs sm:text-sm leading-relaxed">
+                <section>
+                    <h3 class="text-lg font-bold text-blue-400 mb-2">1. Why Do Applications Get Rejected?</h3>
+                    <p>Every year, thousands of capable students face application rejections simply because their uploaded photograph or signature does not comply with the strict guidelines set by the Tamil Nadu Public Service Commission (TNPSC) or other boards. Common reasons include:</p>
+                    <ul class="list-disc pl-5 mt-2 space-y-1 text-slate-400">
+                        <li><strong>Blurry Images:</strong> Compressing an image using generic tools often destroys the pixels. Our tool uses a targeted compression algorithm that preserves quality while reducing file size (KB).</li>
+                        <li><strong>Incorrect Background:</strong> Most official portals strictly demand a plain white or very light background. Uploading photos with blue, red, or outdoor backgrounds is a major risk.</li>
+                        <li><strong>Missing Name and Date:</strong> As per recent TNPSC and SSC updates, the candidate's name and the date the photo was taken must be clearly printed at the bottom of the passport photograph.</li>
+                        <li><strong>Wrong File Size:</strong> The portal will throw a technical error if your photo is not strictly between <strong>20KB and 50KB</strong>, or if your signature is not between <strong>10KB and 20KB</strong>.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3 class="text-lg font-bold text-blue-400 mb-2">2. How Our Baby Xerox Tool Solves These Problems</h3>
+                    <p>We designed the <strong>TNPSC Photo Resizer and Compressor</strong> specifically to tackle these portal constraints. Here is how our automated HTML5 system helps you:</p>
+                    <ul class="list-disc pl-5 mt-2 space-y-1 text-slate-400">
+                        <li><strong>Auto-Background Removal:</strong> No need for Photoshop. Our AI-based edge detection automatically removes your studio background and replaces it with a pure white canvas.</li>
+                        <li><strong>Smart Cropping & Padding:</strong> It crops your face perfectly and adds the mandatory white strip at the bottom to neatly print your Name and Date (in DD-MM-YYYY format).</li>
+                        <li><strong>Strict KB Targeting:</strong> Our binary-search compression engine guarantees that the final downloaded JPEG file will never exceed your selected maximum KB size, ensuring a 100% upload success rate.</li>
+                        <li><strong>Signature Whitener:</strong> Taking a photo of your signature with a mobile phone often results in a grey, dull background. Our <em>Paper Whitener</em> tool boosts brightness and contrast to make the background pure white and the ink dark, just like a professional scanner.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3 class="text-lg font-bold text-blue-400 mb-2">3. Detailed Step-by-Step Instructions</h3>
+                    <div class="space-y-2 mt-2 text-slate-400">
+                        <p><strong>Step A:</strong> Click on "Choose File" under the Passport Photograph section and select your image.</p>
+                        <p><strong>Step B:</strong> Enter your full name in capital letters (e.g., S. KARTHIK) and select the date the photo was captured.</p>
+                        <p><strong>Step C:</strong> Choose your required dimensions (130x170 for standard TNPSC, or 275x354 for Group 4, or set custom pixels).</p>
+                        <p><strong>Step D:</strong> Adjust the "Background Removal Strength" slider if your original background color is partially sticking to your hair or shoulders.</p>
+                        <p><strong>Step E:</strong> Click "Process Photograph". The tool will process everything locally on your browser. Finally, click the green "Download" button to save your portal-ready file.</p>
+                    </div>
+                </section>
+                
+                <section>
+                    <h3 class="text-lg font-bold text-blue-400 mb-2">4. Privacy and Data Security</h3>
+                    <p>Your privacy is our utmost priority. Unlike other online tools that upload your sensitive photos to their cloud servers, <strong>Baby Xerox processes everything directly on your device</strong> (Client-Side processing). Your image data never leaves your computer or mobile phone. Once you close the tab, the data is completely erased.</p>
+                </section>
+            </div>
+        </article>
+
     </main>
 
     <!-- Professional Footer -->
@@ -655,8 +710,36 @@
     <!-- Hidden Canvas Elements for Processing -->
     <canvas id="processCanvas" class="hidden"></canvas>
 
+    <!-- Cookie Consent Banner (Mandatory for AdSense Approval) -->
+    <div id="cookieBanner" class="fixed bottom-0 left-0 w-full bg-slate-900 border-t border-slate-700 shadow-2xl z-50 transform transition-transform translate-y-full duration-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="text-slate-300 text-xs sm:text-sm">
+                <p><strong>We value your privacy.</strong> We use cookies (including Google AdSense DART cookies) to personalize content, ads, and analyze our traffic. By clicking "Accept All", you consent to our use of cookies. Read our <a href="#privacySection" class="text-blue-400 underline">Privacy Policy</a> for more details.</p>
+            </div>
+            <div class="flex items-center gap-3 shrink-0">
+                <button onclick="acceptCookies()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-6 rounded-lg text-sm transition duration-300 shadow-lg">Accept All</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Web Audio Synthesizer / Custom Song Player -->
     <script>
+        // --- Cookie Consent Logic ---
+        document.addEventListener("DOMContentLoaded", () => {
+            if (!localStorage.getItem("cookieConsentAccepted")) {
+                setTimeout(() => {
+                    const banner = document.getElementById("cookieBanner");
+                    banner.classList.remove("translate-y-full");
+                }, 1500); // Show after 1.5 seconds
+            }
+        });
+
+        function acceptCookies() {
+            localStorage.setItem("cookieConsentAccepted", "true");
+            const banner = document.getElementById("cookieBanner");
+            banner.classList.add("translate-y-full");
+        }
+
         // --- PWA (App Installation) Setup ---
         const manifestJSON = {
             "name": "TNPSC Photo Resizer - Baby Xerox",
